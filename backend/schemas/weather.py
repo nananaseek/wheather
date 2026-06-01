@@ -21,7 +21,7 @@ class WeatherSchema(BaseModel):
     
 
 class WeatherCreateSchema(WeatherSchema):
-    city_id: int
+    id: int
 
 
 class WeatherGetSchema(WeatherSchema):

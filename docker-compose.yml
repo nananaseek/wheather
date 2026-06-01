@@ -56,6 +56,7 @@ services:
       redis:
         condition: service_healthy
 
+
   celery_worker:
       container_name: celery_worker
       image: weather-api-image:latest
@@ -75,3 +76,16 @@ services:
           condition: service_healthy
         api:
           condition: service_started
+
+
+  frontend:
+    container_name: frontend
+    image: weather-frontend-image:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - api

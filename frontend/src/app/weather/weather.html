@@ -1,0 +1,62 @@
+<div class="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden p-3">
+
+    @if ((apiService.selectedCityName$ | async); as cityName) {
+
+    @if ((apiService.weather$ | async); as weather) {
+
+    <div class="p-6 bg-linear-to-br from-blue-500 to-indigo-600 text-white">
+        <div class="flex justify-between items-start">
+            <div>
+                <h2 class="text-2xl font-bold">{{ weather.name }}</h2>
+                <p class="text-sm opacity-80 capitalize">{{ weather.description }}</p>
+            </div>
+            <span class="text-sm bg-white/20 px-2 py-1 rounded-full font-mono">{{ weather.country }}</span>
+        </div>
+
+        <div class="my-8 text-center">
+            <h1 class="text-6xl font-extrabold tracking-tight">{{ weather.temperature }}°C</h1>
+            <p class="text-xs opacity-70 mt-1">Відчувається як: {{ weather.temp_feels_like }}°C</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 bg-white/10 p-4 rounded-xl text-sm backdrop-blur-sm">
+            <div>💧 Вологість: <span class="font-semibold">{{ weather.humidity }}%</span></div>
+            <div>☁️ Хмарність: <span class="font-semibold">{{ weather.clouds }}%</span></div>
+            <div>🌅 Схід: <span class="font-semibold">{{ weather.sunrise | date:'HH:mm' }}</span></div>
+            <div>🌇 Захід: <span class="font-semibold">{{ weather.sunset | date:'HH:mm' }}</span></div>
+        </div>
+
+        <div class="mt-4 flex justify-end">
+            <button (click)="apiService.updateWeatherRequest(weather.rain)"
+                class="text-xs bg-white text-indigo-600 hover:bg-opacity-90 font-medium py-1.5 px-3 rounded-lg shadow transition">
+                🔄 Оновити (Celery)
+            </button>
+        </div>
+    </div>
+
+    } @else {
+
+    <div class="p-8 text-center space-y-3">
+        <div class="inline-flex p-3 bg-amber-50 text-amber-500 rounded-full animate-bounce">
+            ⏳
+        </div>
+        <h3 class="text-lg font-semibold text-gray-700">Дані для міста {{ cityName }} ще не готові</h3>
+        <p class="text-gray-500 text-sm max-w-xs mx-auto">
+            Бекенд робить магію в докері та оновлює базу. Зачекайте кілька секунд або спробуйте оновити вручну.
+        </p>
+    </div>
+
+    }
+
+    } @else {
+
+    <div class="p-12 text-center space-y-4 bg-slate-50">
+        <div class="text-5xl">🌍</div>
+        <h3 class="text-lg font-bold text-gray-800">Погода не вибрана</h3>
+        <p class="text-gray-500 text-sm max-w-xs mx-auto">
+            Будь ласка, оберіть місто зі списку ліворуч або додайте нове, щоб побачити актуальний прогноз погоди.
+        </p>
+    </div>
+
+    }
+
+</div>

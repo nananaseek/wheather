@@ -2,6 +2,7 @@ import logging
 
 from fastapi import APIRouter, status, Depends
 from fastapi.exceptions import HTTPException
+from services.weather import WeatherService
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_session
@@ -35,4 +36,13 @@ async def update_weather_request(
 async def get_weather(
         city_id: int,
         session: AsyncSession = Depends(get_session)
-) -> list[WeatherSchema]:
+) -> WeatherSchema:
+    query = await WeatherService.get_weather(city_id=city_id)
+
+    if query is None:
+        logger.warning("Can`t found weather for this city")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+    weather = WeatherGetSchema.model_validate(query)
+    
+    return weather

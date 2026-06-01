@@ -1,0 +1,32 @@
+<!-- <button class="w-full bg-gray-200 h-10 rounded-2xl p-1 justify-center text-center "><p>Додати місто +</p></button> -->
+
+<div class="w-full">
+
+    @if (!isEditing) {
+
+    <button (click)="openForm()"
+        class="w-full bg-blue-500 hover:bg-blue-400 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-colors duration-200 flex items-center justify-center gap-2">
+        Додати місто
+    </button>
+
+    } @else {
+
+    <div class="flex flex-col gap-2 p-2 bg-white rounded-lg border border-gray-200 shadow-inner">
+        <input type="text" [(ngModel)]="newCityName" (keyup.enter)="submitCity()" placeholder="Введіть назву міста..."
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            autofocus />
+
+        <div class="flex justify-end gap-2 text-xs">
+            <button (click)="closeForm()" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded transition">
+                Скасувати
+            </button>
+            <button (click)="submitCity()" [disabled]="!newCityName.trim()"
+                class="px-3 py-1 bg-blue-500 hover:bg-blue-400 disabled:opacity-90 text-white font-medium rounded transition">
+                Зберегти
+            </button>
+        </div>
+    </div>
+
+    }
+
+</div>
