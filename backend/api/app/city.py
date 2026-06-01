@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from fastapi import APIRouter, status
@@ -10,6 +11,7 @@ from core.database import get_session
 from schemas.city import CitySchema, CityGetSchema
 from services.city import CityService
 from services.open_weather_api import OpenWeather
+from services.weather import WeatherService
 from tasks.task import create_weather
 
 logger = logging.getLogger(__name__)
@@ -58,8 +60,17 @@ async def get_all_city(
         session : AsyncSession = Depends(get_session)
 ) -> list[CityGetSchema]:
     try:
-        raw_city_list = await CityService.get_all(session=session)
-        result = [CityGetSchema(id=city.id, name=city.name) for city in raw_city_list]
+        raw_city_list = await CityService.get_cities(session=session)
+        result = []
+        for city in raw_city_list:
+            weather = city.weather
+            while weather is None:
+                logger.warning("Weather for city is not ready! Whaiting...")
+                await asyncio.sleep(0.5)
+                weather = await WeatherService.get_weather(session=session, city_id=city.id)
+                
+            result.append(CityGetSchema(id=city.id, name=city.name, weather=weather))
+        
         return result
     except Exception as e:
         logger.error(f"Error in get all city: {e}", exc_info=True)

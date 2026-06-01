@@ -39,10 +39,3 @@ class City(Base):
     weather: Mapped[list["Weather"]] = relationship(
         "Weather", back_populates="city", cascade="all, delete-orphan", uselist=False
     )
-
-#
-# @event.listens_for(City, 'after_commit')
-# def create_weather_event(mapper, connection, target):
-#     # logger.info(f'City {target.name} created, start pars weather')
-#     print('start event')
-#     create_weather.delay()

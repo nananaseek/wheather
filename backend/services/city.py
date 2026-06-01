@@ -1,6 +1,7 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 from sqlalchemy import select
 
 from models import City
@@ -19,9 +20,9 @@ class CityService(BaseService):
     @classmethod
     async def get_cities(cls, session: AsyncSession):
         try:
-            query = select(City).order_by(City.name)
+            query = select(City).options(joinedload(City.weather)).order_by(City.name)
             data = await session.execute(query)
-            return data.scalars().all()
+            return data.scalars().unique().all()
         except Exception as e:
             logger.error(f"Error getting cities: {e}")
             raise e

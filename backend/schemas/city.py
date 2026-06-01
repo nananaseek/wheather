@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
+from schemas.weather import WeatherSchema
+
 
 class CitySchema(BaseModel):
     name: str
@@ -12,6 +14,7 @@ class CitySchema(BaseModel):
 class CityGetSchema(BaseModel):
     id: int
     name: str
+    weather: WeatherSchema
 
 class CityCreateSchema(CitySchema):
     pass

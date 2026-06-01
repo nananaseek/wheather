@@ -1,5 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import { Api } from '../api';
+import { CityGet } from '../models/city-get';
 
 @Component({
   selector: 'app-city-button',
@@ -9,21 +10,18 @@ import { Api } from '../api';
   styleUrl: './city-button.css',
 })
 export class CityButton {
-  @Input() cityId!: number;   // Приймаємо ID від списку міст
-  @Input() cityName: string = ''; // Приймаємо назву від списку міст
-
+  @Input() cityData!: CityGet;
+  
   private apiService = inject(Api);
 
   selectThisCity() {
-    // Викликаємо наш оновлений метод
-    this.apiService.getWeather(this.cityId, this.cityName);
+    this.apiService.selectCityWeather(this.cityData);
   }
-  deleteThisCity(event: Event) {
-    // Цей рядок зупиняє подію кліку і не дає їй спрацювати на батьківській кнопці!
-    event.stopPropagation();
 
-    if (confirm(`Ви впевнені, що хочете видалити місто ${this.cityName}?`)) {
-      this.apiService.deleteCity(this.cityId);
+  deleteThisCity(event: Event) {
+    event.stopPropagation();
+    if (confirm(`Ви впевнені, що хочете видалити місто ${this.cityData.name}?`)) {
+      this.apiService.deleteCity(this.cityData.id);
     }
   }
 }
