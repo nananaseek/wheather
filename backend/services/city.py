@@ -47,17 +47,3 @@ class CityService(BaseService):
         except Exception as e:
             logger.error(f"Error creating city: {e}")
             raise e
-
-
-    # @classmethod
-    # async def add_weather(cls, session: AsyncSession, city_id: int, weather_id: int):
-    #     try:
-    #         city = await cls.get_city_by_id(session, city_id)
-    #         if city:
-    #             city.weather_id = weather_id
-    #             await session.commit()
-    #             return city
-    #         return None
-    #     except Exception as e:
-    #         logger.error(f"Error adding weather: {e}")
-    #         raise e

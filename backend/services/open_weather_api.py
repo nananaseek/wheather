@@ -8,7 +8,7 @@ from httpx import HTTPStatusError
 from core.settings import settings
 from schemas.city import CityCreateSchema
 from schemas.open_weather import WeatherResponse
-from schemas.open_weather import GeoApiResponseList
+from schemas.open_weather import GeoApiResponse
 
 
 logger = logging.getLogger(__name__)
@@ -27,9 +27,19 @@ class OpenWeather:
 
                 response.raise_for_status()
 
-                result = response.json()
+                raw_response = response.json()
 
-                return CityCreateSchema(**result[0])
+                if not raw_response:
+                    logger.info('Can`t find city')
+                    return None
+
+                response_schema = GeoApiResponse(**raw_response[0])
+
+                return CityCreateSchema(
+                    name=response_schema.name,
+                    latitude=response_schema.lat,
+                    longitude=response_schema.lon
+                )
 
         except HTTPStatusError as e:
             logger.error(f'Can`t get latitude and longitude for {city}: {e}', exc_info=True)

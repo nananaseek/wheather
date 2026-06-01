@@ -42,9 +42,6 @@ services:
       - .env
     ports:
       - "8000:8000"
-    # volumes:
-    #   - .:/wheather/backend
-    #   - /wheather/backend/.venv
     develop:
       watch:
         - action: sync
@@ -61,7 +58,7 @@ services:
       container_name: celery_worker
       image: weather-api-image:latest
       restart: unless-stopped
-      command: sh -c 'uv run celery -A core.celery.worker.app worker --loglevel=info'
+      command: sh -c 'uv run celery -A core.celery.worker.app worker --loglevel=debug'
       env_file:
         - .env
       develop:
@@ -86,6 +83,6 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "4200:80"
+      - "4200:4200"
     depends_on:
       - api

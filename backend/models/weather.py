@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String
+from sqlalchemy import DateTime, ForeignKey, String, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.functions import func
 
@@ -10,24 +10,24 @@ from core.database.db import Base
 class Weather(Base):
     __tablename__ = "weather"
 
-    city_id: Mapped[int] = mapped_column(ForeignKey("cities.id"))
+    city_id: Mapped[int] = mapped_column(ForeignKey("cities.id", ondelete="CASCADE"), nullable=True)
     city: Mapped["City"] = relationship("City", back_populates="weather", uselist=False)
     temperature: Mapped[float]
     temp_feels_like: Mapped[float]
     temp_min: Mapped[float]
     temp_max: Mapped[float]
     visibility: Mapped[float]
-    dt: Mapped[datetime]
+    dt: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     country: Mapped[str]
-    sunrise: Mapped[datetime]
-    sunset: Mapped[datetime]
+    sunrise: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    sunset: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     humidity: Mapped[float]
     timezone: Mapped[str]
     name: Mapped[str]
     rain: Mapped[int]
     clouds: Mapped[int]
     description: Mapped[str]
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=datetime.now())
 
 
 class City(Base):
@@ -39,3 +39,10 @@ class City(Base):
     weather: Mapped[list["Weather"]] = relationship(
         "Weather", back_populates="city", cascade="all, delete-orphan", uselist=False
     )
+
+#
+# @event.listens_for(City, 'after_commit')
+# def create_weather_event(mapper, connection, target):
+#     # logger.info(f'City {target.name} created, start pars weather')
+#     print('start event')
+#     create_weather.delay()

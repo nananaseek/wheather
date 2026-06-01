@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator, ConfigDict
 
 
 class WeatherSchema(BaseModel):
@@ -15,14 +15,25 @@ class WeatherSchema(BaseModel):
     humidity: float
     timezone: str
     name: str
-    rain: int
+    rain: float
     clouds: int
     description: str
-    
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("timezone", mode="before")
+    @classmethod
+    def serialize_timezone(cls, value):
+        if value is not None:
+            return str(value)
+        return value
+
 
 class WeatherCreateSchema(WeatherSchema):
-    id: int
+    city_id: int
 
 
 class WeatherGetSchema(WeatherSchema):
     id: int
+
+    model_config = ConfigDict(from_attributes=True)

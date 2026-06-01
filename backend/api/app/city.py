@@ -10,7 +10,7 @@ from core.database import get_session
 from schemas.city import CitySchema, CityGetSchema
 from services.city import CityService
 from services.open_weather_api import OpenWeather
-
+from tasks.task import create_weather
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ async def get_geo(
 ) -> CitySchema:
     try:
             is_city = await CityService.get_city_by_name(session=session, name=city)
-
+            logger.info(f"Is city: {is_city}")
             if is_city:
                 if str(is_city.name).lower() == city.lower():
                     msg = "City with this name already in database"
@@ -42,6 +42,8 @@ async def get_geo(
             result = await CityService.create(
                 session=session, data=city_data.model_dump()
             )
+
+            create_weather.delay(result.id)
 
             return CitySchema.model_validate(result)
 

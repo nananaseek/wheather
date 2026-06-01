@@ -31,6 +31,11 @@ async def create_weather(city_id: int):
                 name=city.name
             )
 
+            if response.rain is None:
+                response.rain = 0
+            else:
+                response.rain = response.rain.one_h
+
             weather_create_schema = WeatherCreateSchema(
                 city_id=city_id,
                 temperature=response.main.temp,
@@ -45,16 +50,16 @@ async def create_weather(city_id: int):
                 humidity=response.main.humidity,
                 timezone=response.timezone,
                 name=response.name,
-                rain=response.rain.one_h,
+                rain=response.rain,
                 clouds=response.clouds.all,
                 description=response.weather[0].description
             )
 
             await WeatherService.create_weather(
                 session=session,
-                data=weather_create_schema.model_dump(),
+                data=weather_create_schema,
             )
-
+            return True
         except Exception as e:
             logger.error(f"Error in celery create weather: {str(e)}", exc_info=True)
 
@@ -75,6 +80,12 @@ async def update_weather(city_id: int):
                 name=city.name
             )
 
+            if response.rain is None:
+                response.rain = 0
+            else:
+                response.rain = response.rain.one_h
+
+
             weather_update_schema = WeatherSchema(
                 temperature=response.main.temp,
                 temp_feels_like=response.main.feels_like,
@@ -88,7 +99,7 @@ async def update_weather(city_id: int):
                 humidity=response.main.humidity,
                 timezone=response.timezone,
                 name=response.name,
-                rain=response.rain.one_h,
+                rain=response.rain,
                 clouds=response.clouds.all,
                 description=response.weather[0].description
             )
@@ -100,7 +111,7 @@ async def update_weather(city_id: int):
             result = WeatherGetSchema.model_validate(updated_weather)
 
             logger.info(f'Weather is updated, new data: {result}')
-            return result
+            return result.model_dump()
 
         except Exception as e:
             logger.error(f"Error in celery update task: {str(e)}", exc_info=True)

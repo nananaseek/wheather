@@ -22,7 +22,7 @@ async def update_weather_request(
         result = update_weather.delay(city_id)
         try:
             return_value = result.get(timeout=10)
-            logger.info("Weather is updated")
+            logger.info(f"Weather is updated : {return_value}")
             return return_value
         except TimeoutError:
             logger.error("Data load to long...")
@@ -36,10 +36,10 @@ async def update_weather_request(
 async def get_weather(
         city_id: int,
         session: AsyncSession = Depends(get_session)
-) -> WeatherSchema:
-    query = await WeatherService.get_weather(city_id=city_id)
+) -> WeatherGetSchema:
+    query = await WeatherService.get_weather(session=session, city_id=city_id)
 
-    if query is None:
+    if (query is None) or (query == False):
         logger.warning("Can`t found weather for this city")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     

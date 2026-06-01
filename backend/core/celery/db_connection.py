@@ -11,13 +11,6 @@ from core.database import AsyncSessionLocal, engine
 
 logger = logging.getLogger(__name__)
 process_local = local()
-# default_engine = create_engine(
-#     settings.get_db_url(),
-#     pool_pre_ping=True,
-#     pool_size=10,
-#     max_overflow=20,
-# )
-# default_Session = sessionmaker(bind=default_engine, expire_on_commit=False)
 
 
 def create_engine_for_worker():

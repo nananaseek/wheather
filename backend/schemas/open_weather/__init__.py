@@ -1,4 +1,4 @@
-from .geo_api import GeoApiResponseList
+from .geo_api import GeoApiResponse
 from .weather import WeatherResponse
 
-__all__ = ["GeoApiResponseList", "WeatherResponse"]
+__all__ = ["GeoApiResponse", "WeatherResponse"]

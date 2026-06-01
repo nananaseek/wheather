@@ -1,3 +1,4 @@
+# from .events import *
 from .db import AsyncSessionLocal, Base, engine
 from .connection import get_session
 

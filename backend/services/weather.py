@@ -48,10 +48,12 @@ class WeatherService(BaseService):
             city_id: int
     ) -> Weather | None:
         try:
-            updated_weather = update(Weather).where(Weather.city_id == city_id).values(**data.model_dump())
+            updated_weather = update(Weather).where(Weather.city_id == city_id).values(**data.model_dump()).returning(Weather)
+            result = await session.execute(updated_weather)
+            updated_weather_object = result.scalar_one()
             await session.commit()
-            await session.refresh(updated_weather)
-            return updated_weather
+            await session.refresh(updated_weather_object)
+            return updated_weather_object
         except Exception as e:
             await session.rollback()
             logger.error(f"Error in update weather data {e}", exc_info=True)

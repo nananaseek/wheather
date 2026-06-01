@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { City } from './models/city';
 import { Weather } from './models/weather';
 import { CityGet } from './models/city-get';
+import { WeatherGet } from './models/weather-get';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,7 @@ export class Api {
   private baseUrl = 'http://localhost:8000';
 
   // Джерело правди для погоди та списку міст
-  private weatherSubject$ = new BehaviorSubject<Weather | null>(null);
+  private weatherSubject$ = new BehaviorSubject<WeatherGet | null>(null);
   public weather$ = this.weatherSubject$.asObservable();
 
   private citiesSubject$ = new BehaviorSubject<CityGet[]>([]);
@@ -39,7 +40,7 @@ export class Api {
 
     // 3. Робимо запит до FastAPI за ID міста
     const params = new HttpParams().set('city_id', cityId);
-    this.http.get<Weather>(`${this.baseUrl}/get_weather`, { params }).subscribe({
+    this.http.get<WeatherGet>(`${this.baseUrl}/get_weather`, { params }).subscribe({
       next: (weather) => this.weatherSubject$.next(weather),
       error: (err) => {
         console.error('Помилка отримання погоди:', err);
@@ -57,9 +58,9 @@ export class Api {
   updateWeatherRequest(cityId: number): void {
     const params = new HttpParams().set('city_id', cityId);
 
-    this.http.get<Weather>(`${this.baseUrl}/update-weather`, { params }).subscribe({
+    this.http.get<WeatherGet>(`${this.baseUrl}/update-weather`, { params }).subscribe({
       next: (updatedWeather) => {
-        console.log('Погоду успішно оновлено через Celery');
+        console.log('Погоду успішно оновлено');
         // Одразу пускаємо оновлені дані в потік
         this.weatherSubject$.next(updatedWeather);
       },

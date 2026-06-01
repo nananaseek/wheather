@@ -1,47 +1,64 @@
-<div class="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden p-3">
+<div
+    class="w-full h-full min-h-112.5 mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col">
 
     @if ((apiService.selectedCityName$ | async); as cityName) {
 
     @if ((apiService.weather$ | async); as weather) {
 
-    <div class="p-6 bg-linear-to-br from-blue-500 to-indigo-600 text-white">
+    <div
+        class="p-6 md:p-8 lg:p-10 bg-linear-to-br from-blue-500 to-indigo-600 text-white h-full flex flex-col justify-between gap-6 transition-all">
+
         <div class="flex justify-between items-start">
             <div>
-                <h2 class="text-2xl font-bold">{{ weather.name }}</h2>
-                <p class="text-sm opacity-80 capitalize">{{ weather.description }}</p>
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">{{ weather.name }}</h2>
+                <p class="text-sm md:text-base opacity-95 capitalize mt-1">{{ weather.description }}</p>
+
+                <p class="text-xs md:text-sm text-blue-100 mt-2 flex items-center gap-1.5 font-medium">
+                    🕒 Місцевий час:
+                    <span class="font-mono bg-black/10 px-2 py-0.5 rounded">
+                        {{ getLocalTime(weather.timezone) | date:'HH:mm (dd.MM)' }}
+                    </span>
+                </p>
             </div>
-            <span class="text-sm bg-white/20 px-2 py-1 rounded-full font-mono">{{ weather.country }}</span>
+            <span class="text-xs md:text-sm bg-white/20 px-3 py-1 rounded-full font-mono font-bold tracking-wider">{{
+                weather.country }}</span>
         </div>
 
-        <div class="my-8 text-center">
-            <h1 class="text-6xl font-extrabold tracking-tight">{{ weather.temperature }}°C</h1>
-            <p class="text-xs opacity-70 mt-1">Відчувається як: {{ weather.temp_feels_like }}°C</p>
+        <div class="text-center flex flex-col justify-center my-auto py-4">
+            <h1 class="text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter">{{ weather.temperature }}°C</h1>
+            <p class="text-xs md:text-sm opacity-80 mt-2 font-medium">Відчувається як: {{ weather.temp_feels_like }}°C
+            </p>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 bg-white/10 p-4 rounded-xl text-sm backdrop-blur-sm">
-            <div>💧 Вологість: <span class="font-semibold">{{ weather.humidity }}%</span></div>
-            <div>☁️ Хмарність: <span class="font-semibold">{{ weather.clouds }}%</span></div>
-            <div>🌅 Схід: <span class="font-semibold">{{ weather.sunrise | date:'HH:mm' }}</span></div>
-            <div>🌇 Захід: <span class="font-semibold">{{ weather.sunset | date:'HH:mm' }}</span></div>
+        <div
+            class="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-white/10 p-4 md:p-6 rounded-xl text-sm md:text-base backdrop-blur-sm shadow-inner">
+            <div class="flex items-center gap-2">💧 <span class="opacity-90">Вологість:</span> <span
+                    class="font-bold">{{ weather.humidity }}%</span></div>
+            <div class="flex items-center gap-2">☁️ <span class="opacity-90">Хмарність:</span> <span
+                    class="font-bold">{{ weather.clouds }}%</span></div>
+            <div class="flex items-center gap-2">🌅 <span class="opacity-90">Схід:</span> <span
+                    class="font-bold font-mono">{{ weather.sunrise | date:'HH:mm' }}</span></div>
+            <div class="flex items-center gap-2">🌇 <span class="opacity-90">Захід:</span> <span
+                    class="font-bold font-mono">{{ weather.sunset | date:'HH:mm' }}</span></div>
         </div>
 
-        <div class="mt-4 flex justify-end">
-            <button (click)="apiService.updateWeatherRequest(weather.rain)"
-                class="text-xs bg-white text-indigo-600 hover:bg-opacity-90 font-medium py-1.5 px-3 rounded-lg shadow transition">
-                🔄 Оновити (Celery)
+        <div class="flex justify-end items-center mt-2 border-t border-white/10 pt-4">
+            <button (click)="apiService.updateWeatherRequest(weather.id)"
+                class="text-xs md:text-sm bg-white text-indigo-600 hover:bg-opacity-90 font-semibold py-2 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                🔄 Оновити погоду
             </button>
         </div>
     </div>
 
     } @else {
 
-    <div class="p-8 text-center space-y-3">
-        <div class="inline-flex p-3 bg-amber-50 text-amber-500 rounded-full animate-bounce">
+    <div class="p-8 text-center flex flex-col justify-center items-center h-full my-auto space-y-4">
+        <div class="inline-flex p-4 bg-amber-50 text-amber-500 rounded-full text-2xl animate-bounce shadow-xs">
             ⏳
         </div>
-        <h3 class="text-lg font-semibold text-gray-700">Дані для міста {{ cityName }} ще не готові</h3>
-        <p class="text-gray-500 text-sm max-w-xs mx-auto">
-            Бекенд робить магію в докері та оновлює базу. Зачекайте кілька секунд або спробуйте оновити вручну.
+        <h3 class="text-xl font-bold text-gray-800">Дані для міста {{ cityName }} ще не готові</h3>
+        <p class="text-gray-500 text-sm md:text-base max-w-md mx-auto leading-relaxed">
+            Оновіть сторінку.
         </p>
     </div>
 
@@ -49,10 +66,10 @@
 
     } @else {
 
-    <div class="p-12 text-center space-y-4 bg-slate-50">
-        <div class="text-5xl">🌍</div>
-        <h3 class="text-lg font-bold text-gray-800">Погода не вибрана</h3>
-        <p class="text-gray-500 text-sm max-w-xs mx-auto">
+    <div class="p-8 md:p-16 text-center flex flex-col justify-center items-center bg-slate-50 h-full my-auto space-y-4">
+        <div class="text-6xl md:text-7xl animate-pulse">🌍</div>
+        <h3 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Погода не вибрана</h3>
+        <p class="text-gray-500 text-sm md:text-base max-w-sm mx-auto leading-relaxed">
             Будь ласка, оберіть місто зі списку ліворуч або додайте нове, щоб побачити актуальний прогноз погоди.
         </p>
     </div>

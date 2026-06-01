@@ -10,4 +10,13 @@ import { Api } from '../api';
 })
 export class Weather {
   public apiService = inject(Api);
+
+  getLocalTime(timezoneOffsetInSeconds: string | number): Date {
+    const offset = Number(timezoneOffsetInSeconds);
+    
+    const now = new Date();
+    const utcTimestamp = now.getTime() + (now.getTimezoneOffset() * 60000);
+    
+    return new Date(utcTimestamp + (offset * 1000));
+  }
 }

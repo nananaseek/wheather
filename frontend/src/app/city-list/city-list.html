@@ -1,4 +1,4 @@
-<div class="p-4 max-w-sm mx-auto bg-gray-50 rounded-xl shadow-md space-y-4 h-full m-1">
+<div class="p-4 max-w-sm mx-auto bg-gray-50 rounded-xl shadow-md space-y-4 w-full h-full m-1">
     <h2 class="text-xl font-bold text-gray-800">Ваші міста</h2>
 
     @if ((apiService.cities$ | async); as cityList) {
@@ -10,6 +10,8 @@
         <app-city-button [cityId]="city.id" [cityName]="city.name"></app-city-button>
         }
     </div>
+    <div class="p-2"></div>
+    <app-city-button-create></app-city-button-create>
 
     } @else {
 

@@ -1,7 +1,7 @@
 from fastapi.routing import APIRouter
 
-from .open_weather import weather_router
-from .app import city_router
+
+from .app import city_router, weather_router
 
 main_router = APIRouter()
 
